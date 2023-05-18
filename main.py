@@ -24,26 +24,31 @@ def write_file_info(file_info, output_file):
             f.write(f"{file}\t{size} bytes\n")
 
 
-idea_options_directory = 'C:\\Users\\janina\\AppData\\Roaming\\JetBrains\\IntelliJIdea2023.1\\options'
-before_files_directory = 'C:\\Users\\janina\\work\\files_before'
 idea_options_info_filename = 'idea_options_txt'
-laf_file_path = 'C:\\Users\\janina\\AppData\\Roaming\\JetBrains\\IntelliJIdea2023.1\\options\\laf.xml'
-projects_file_path = 'C:\\Users\\janina\\AppData\\Roaming\\JetBrains\\IntelliJIdea2023.1\\options\\recentProjects.xml'
-old_vm_options_path = 'C:\\Users\\janina\\AppData\\Local\\JetBrains\\Toolbox\\apps\\IDEA-U\\ch-0\\231.9011.34.vmoptions'
+before_files_directory = 'C:\\Users\\janina\\work\\files_before'
+after_files_directory = 'C:\\Users\\janina\\work\\files_after'
+options_directory = 'C:\\Users\\janina\\AppData\\Roaming\\JetBrains\\IntelliJIdea2023.1\\options'
+
+laf_file_path = '%s\\laf.xml' % options_directory
+projects_file_path = '%s\\recentProjects.xml' % options_directory
+before_vm_options_path = 'C:\\Users\\janina\\AppData\\Local\\JetBrains\\Toolbox\\apps\\IDEA-U\\ch-0\\231.9011.34.vmoptions'
+after_vm_options = 'C:\\Users\\janina\\AppData\\Roaming\\JetBrains\\IntelliJIdea2023.1\\idea64.exe.vmoptions'
 
 
 def test_dump_files_info_before():
-    idea_options_file_info = collect_file_info(idea_options_directory)
+    idea_options_file_info = collect_file_info(options_directory)
     write_file_info(idea_options_file_info, before_files_directory + '\\' + idea_options_info_filename)
     copy_file(laf_file_path, before_files_directory + '\\' + 'laf.xml')
-    copy_file(laf_file_path, before_files_directory + '\\' + 'recentProjects.xml')
+    copy_file(projects_file_path, before_files_directory + '\\' + 'recentProjects.xml')
+    copy_file(before_vm_options_path, before_files_directory + '\\' + '231.9011.34.vmoptions')
 
 
 def test_dump_files_info_after():
-    idea_options_file_info = collect_file_info(idea_options_directory)
-    write_file_info(idea_options_file_info, before_files_directory + '\\' + idea_options_info_filename)
-    copy_file(laf_file_path, before_files_directory + '\\' + 'laf.xml')
-    copy_file(laf_file_path, before_files_directory + '\\' + 'recentProjects.xml')
+    idea_options_file_info = collect_file_info(options_directory)
+    write_file_info(idea_options_file_info, after_files_directory + '\\' + idea_options_info_filename)
+    copy_file(laf_file_path, after_files_directory + '\\' + 'laf.xml')
+    copy_file(projects_file_path, after_files_directory + '\\' + 'recentProjects.xml')
+    copy_file(after_vm_options, after_files_directory + '\\' + '231.9011.34.vmoptions')
 
 
 def compare_settings_files(file1_path, file2_path):
@@ -55,7 +60,9 @@ def compare_settings_files(file1_path, file2_path):
     return content1 == content2
 
 
-def test_compare_directories(old_directory, new_directory):
+def test_compare_directories():
+    old_directory = 'C:\\Users\\janina\\work\\files_before'
+    new_directory = 'C:\\Users\janina\\work\\files_after'
     differing_files = []
 
     for dirpath, dirnames, filenames in os.walk(old_directory):
